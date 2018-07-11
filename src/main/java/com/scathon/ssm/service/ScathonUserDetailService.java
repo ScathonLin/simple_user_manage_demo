@@ -19,7 +19,7 @@ public class ScathonUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Users user = userService.findByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException("用户名不存在，你输尼玛呢！");
+            throw new UsernameNotFoundException("用户名不存在！");
         }
         return user;
     }
