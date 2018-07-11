@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thyleleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8" content="text/html"/>
+    <title>用户管理系统首页</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div class="row clearfix">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1"><span
+                        class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
+                        class="icon-bar"></span><span class="icon-bar"></span></button>
+                <a class="navbar-brand" href="#" style="color: #eeeeee;">用户信息管理系统</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a style="color: #eeeeee;">欢迎你：<span id="loginUser"
+                                                             th:text="${session.SPRING_SECURITY_CONTEXT.authentication.principal.username}"></span></a>
+                    </li>
+                    <li>
+                        <form id="logout-form" th:action="@{/logout}" method="post"
+                              th:if="${session.SPRING_SECURITY_CONTEXT.authentication.principal}!=null">
+                        </form>
+                        <a th:if="${session.SPRING_SECURITY_CONTEXT.authentication.principal}!=null"
+                           style="color: #eeeeee;cursor: pointer;" id="logout_btn">注销</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div class="row clearfix">
+        <div class="btn-toolbar" role="toolbar">
+            <div class="btn-group">
+                <button type="button" class="btn btn-info detail-btn">查看我的信息</button>
+                <button sec:authorize="hasAnyRole('ADMIN','DEV')" type="button" data-toggle="modal"
+                        data-target="#add-modal" class="btn btn-success">添加用户
+                </button>
+                <button sec:authorize="hasAnyRole('ADMIN','DEV')" type="button" class="btn btn-primary all-user">所有用户
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="row clearfix" th:if="${not #lists.isEmpty(userList)}">
+        <table class="table table-striped">
+            <tr>
+                <th>用户名：</th>
+                <th>密码</th>
+                <th>昵称</th>
+                <th>电话</th>
+                <th>住址</th>
+                <th>审核状态</th>
+                <th sec:authorize="hasRole('ADMIN')">操作</th>
+            </tr>
+            <tr th:each="users:${userList}">
+                <td th:text="${users.username}"></td>
+                <td th:text="${users.password}"></td>
+                <td th:text="${users.knickName}"></td>
+                <td th:text="${users.phone}"></td>
+                <td th:text="${users.address}"></td>
+                <td th:if="${users.status==1}" style="color: limegreen;">已通过</td>
+                <td th:if="${users.status==0}" style="color: orangered;">待审核</td>
+                <td sec:authorize="hasRole('ADMIN')">
+                    <button th:if="${users.status==0}"
+                            class="btn btn-success pass-audit">通过
+                    </button>
+                    <button class="btn btn-danger del-btn">删除</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="add-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">新增用户</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form" th:action="@{/dev/add}" method="post" id="add-form">
+                    <div class="form-group">
+                        <label for="username" class="col-sm-2 control-label">用户名</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="username" id="username" placeholder="请输入用户名"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="col-sm-2 control-label">密码</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="password" name="password"
+                                   placeholder="请输入密码"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="knickName" class="col-sm-2 control-label">昵称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="knickName" name="knickName"
+                                   placeholder="请输入昵称"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" class="col-sm-2 control-label">电话</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="phone" name="phone" placeholder="请输入电话"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address" class="col-sm-2 control-label">住址</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="address" name="address" placeholder="请输入地址"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary  add-btn">提交</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+</body>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script th:inline="javascript" type="application/javascript">
+    $(".detail-btn").click(function () {
+        window.open("/user/" + $("#loginUser").text(), "_self");
+    });
+    $("#logout_btn").click(function () {
+        $("#logout-form").submit();
+    });
+    $(".all-user").click(function () {
+        window.open("/dev/list", "_self");
+    });
+    $(".add-btn").click(function () {
+        $("#add-form").submit();
+    });
+    $(".pass-audit").click(function () {
+        window.open("/admin/audit/" + $(this).parent().parent().children()[0].innerText, "_self");
+    });
+    $(".del-btn").click(function () {
+        window.open("/admin/delete/" + $(this).parent().parent().children()[0].innerText, "_self");
+    });
+</script>
+</html>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.scathon.ssm.mapper.UserMapper">
+    <insert id="insertOne">
+        insert into users(username,password,knick_name,phone,address,status) VALUES (#{username},#{password},#{knickName},#{phone},#{address},#{status});
+    </insert>
+    <update id="updateStatus">
+        update users set status=#{status} where username=#{username}
+    </update>
+    <delete id="delete">
+        delete from users where username=#{username}
+    </delete>
+    <select id="findByUsername" resultType="com.scathon.ssm.pojo.Users">
+        SELECT username,password,knick_name,phone,address,status from users WHERE username=#{username}
+    </select>
+    <select id="findAll" resultType="com.scathon.ssm.pojo.Users">
+        select * from users;
+    </select>
+</mapper>
