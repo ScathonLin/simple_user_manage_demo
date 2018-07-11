@@ -8,9 +8,10 @@ SpringBoot+SpringSecurity+Thymeleaf整合实践，完成一个相对简单的用
 * BootStrap
 * Thymeleaf
 
-###SpringSecurity的配置（关键点）
+### SpringSecurity的配置（关键点）
 
-|username|password|knick_name|phone|address|status	 
-- | :-: | -:  
-| varchar | varchar| varchar |varchar|varchar|int 
+
+|username|password|knick_name|phone|address|status 
+------ | ------ | ------ | ------ | ------ | ------ 
+varchar | varchar| varchar| varchar|varchar|int
 
